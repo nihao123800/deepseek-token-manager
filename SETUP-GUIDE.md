@@ -1,4 +1,4 @@
-# DeepSeek Token 管理系统 - Supabase 初始化指南
+# AI Token 管理系统 - Supabase 初始化指南
 
 ## 第一步：创建数据库表
 

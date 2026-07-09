@@ -1,5 +1,5 @@
 // ============================================
-// DeepSeek Token 转售管理系统 - 配置文件
+// AI Token 转售管理系统 - 配置文件
 // ============================================
 
 const CONFIG = {
@@ -38,7 +38,7 @@ const CONFIG = {
     // 充值档位
     RECHARGE_TIERS: [10, 50, 100],
 
-    // DeepSeek API 格式
+    // API 格式
     API_KEY_PREFIX: 'sk-',
 
     // 默认语言
@@ -47,18 +47,18 @@ const CONFIG = {
     // 支持的语言
     SUPPORTED_LANGS: ['zh', 'en', 'vi'],
 
-    // DeepSeek 定价配置（每百万 tokens）
+    // 定价配置（每百万 tokens）
     PRICING: {
         // 加价比例（50% = 乘以1.5）
         MARKUP_MULTIPLIER: 1.5,
         
-        // deepseek-v4-flash 官方价格
+        // v4-flash 官方价格
         V4_FLASH: {
             INPUT_CACHE_HIT: 0.02,      // 0.02元/百万token
             INPUT_CACHE_MISS: 1,         // 1元/百万token
             OUTPUT: 2                    // 2元/百万token
         },
-        // deepseek-v4-pro 官方价格
+        // v4-pro 官方价格
         V4_PRO: {
             INPUT_CACHE_HIT: 0.025,      // 0.025元/百万token
             INPUT_CACHE_MISS: 3,         // 3元/百万token

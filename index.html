@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Token 服务中心</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="#" class="navbar-brand">AI Token</a>
+            <ul class="navbar-menu">
+                <li><a href="#" data-page="home" class="active" data-i18n="nav_home">首页</a></li>
+                <li><a href="#" data-page="dashboard" data-i18n="nav_dashboard">控制台</a></li>
+                <li><a href="#" data-page="recharge" data-i18n="nav_recharge">充值</a></li>
+                <li><a href="#" data-page="api" data-i18n="nav_api">我的API</a></li>
+                <li><a href="#" data-page="history" data-i18n="nav_history">使用记录</a></li>
+                <li><a href="#" data-page="admin" data-i18n="nav_admin">管理后台</a></li>
+            </ul>
+            <!-- 语言切换 -->
+            <div class="lang-switcher">
+                <button class="lang-btn active" data-lang="zh">中文</button>
+                <button class="lang-btn" data-lang="en">English</button>
+                <button class="lang-btn" data-lang="vi">Tiếng Việt</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区域 -->
+    <main id="app">
+        <!-- 首页 -->
+        <div id="page-home" class="page active">
+            <div class="hero">
+                <h1 class="hero-title" data-i18n="home_title">欢迎使用 AI Token 服务中心</h1>
+                <p class="hero-subtitle" data-i18n="home_subtitle">高质量AI API中转服务</p>
+                <a href="#" class="btn btn-primary" onclick="showPage('register')" data-i18n="get_started">立即开始</a>
+            </div>
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3 class="feature-title" data-i18n="home_feature1_title">稳定可靠</h3>
+                    <p class="feature-desc" data-i18n="home_feature1_desc">7x24小时不间断服务</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3 class="feature-title" data-i18n="home_feature2_title">价格实惠</h3>
+                    <p class="feature-desc" data-i18n="home_feature2_desc">最具性价比的API服务</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title" data-i18n="home_feature3_title">安全快捷</h3>
+                    <p class="feature-desc" data-i18n="home_feature3_desc">数据加密，即时生效</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 登录页面 -->
+        <div id="page-login" class="page" style="display:none;">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <h2 class="auth-title" data-i18n="login_title">用户登录</h2>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="email">邮箱</label>
+                            <input type="email" class="form-input" id="loginEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="password">密码</label>
+                            <input type="password" class="form-input" id="loginPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block" data-i18n="login_button">登录</button>
+                    </form>
+                    <p class="auth-link">
+                        <span data-i18n="no_account">没有账号？</span>
+                        <a href="#" onclick="showPage('register')" data-i18n="go_register">立即注册</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 注册页面 -->
+        <div id="page-register" class="page" style="display:none;">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <h2 class="auth-title" data-i18n="register_title">用户注册</h2>
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="username">用户名</label>
+                            <input type="text" class="form-input" id="regUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="email">邮箱</label>
+                            <input type="email" class="form-input" id="regEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="password">密码</label>
+                            <input type="password" class="form-input" id="regPassword" required minlength="6">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="confirm_password">确认密码</label>
+                            <input type="password" class="form-input" id="regConfirmPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block" data-i18n="register_button">注册</button>
+                    </form>
+                    <p class="auth-link">
+                        <span data-i18n="has_account">已有账号？</span>
+                        <a href="#" onclick="showPage('login')" data-i18n="go_login">立即登录</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 控制台页面 -->
+        <div id="page-dashboard" class="page" style="display:none;">
+            <div class="container">
+                <h2 class="card-header" data-i18n="dashboard_title">我的控制台</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="balanceValue">0</div>
+                        <div class="stat-label"><span data-i18n="balance">账户余额</span> (<span data-i18n="unit_yuan">元</span>)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="todayUsage">0</div>
+                        <div class="stat-label"><span data-i18n="today_usage">今日使用量</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="monthUsage">0</div>
+                        <div class="stat-label"><span data-i18n="month_usage">本月使用量</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalUsage">0</div>
+                        <div class="stat-label"><span data-i18n="total_usage">总使用量</span></div>
+                    </div>
+                </div>
+
+                <!-- 分配的API Key -->
+                <div class="card">
+                    <h3 style="margin-bottom: 16px;">我的 API Key</h3>
+                    <div id="assignedApiKeyDisplay">
+                        <p style="color:var(--text-secondary);">暂未分配API Key，请联系管理员</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 充值页面 -->
+        <div id="page-recharge" class="page" style="display:none;">
+            <div class="container">
+                <h2 class="card-header" data-i18n="recharge_title">账户充值</h2>
+                <div class="card">
+                    <h3 style="margin-bottom: 16px;" data-i18n="recharge_amount">充值金额</h3>
+                    <div class="recharge-options">
+                        <div class="recharge-option" data-amount="10">
+                            <div class="recharge-amount">¥10</div>
+                            <div class="recharge-unit" data-i18n="unit_yuan">元</div>
+                        </div>
+                        <div class="recharge-option selected" data-amount="50">
+                            <div class="recharge-amount">¥50</div>
+                            <div class="recharge-unit" data-i18n="unit_yuan">元</div>
+                        </div>
+                        <div class="recharge-option" data-amount="100">
+                            <div class="recharge-amount">¥100</div>
+                            <div class="recharge-unit" data-i18n="unit_yuan">元</div>
+                        </div>
+                    </div>
+                    <!-- 当前选中金额提示 -->
+                    <div id="selectedAmountDisplay" style="text-align:center;padding:12px;background:#f0f9ff;border-radius:8px;margin-bottom:16px;font-size:18px;color:#0369a1;">
+                        <span data-i18n="recharge_selected">已选择金额：</span><strong id="selectedAmountText">¥50</strong>
+                    </div>
+
+                    <h3 style="margin-bottom: 16px;" data-i18n="recharge_info">请将金额转入以下账户</h3>
+
+                    <!-- 银行卡信息 + 二维码并排显示 -->
+                    <div class="payment-layout">
+                        <div class="payment-info">
+                            <div class="payment-info-row">
+                                <span class="payment-info-label" data-i18n="recharge_bank_name">银行名称</span>
+                                <span class="payment-info-value" id="bankName">工商银行</span>
+                            </div>
+                            <div class="payment-info-row">
+                                <span class="payment-info-label" data-i18n="recharge_account">银行卡号</span>
+                                <span class="payment-info-value" id="bankAccount">6222 0000 0000 0000</span>
+                            </div>
+                            <div class="payment-info-row">
+                                <span class="payment-info-label" data-i18n="recharge_account_name">账户姓名</span>
+                                <span class="payment-info-value" id="accountName">黄刚</span>
+                            </div>
+                            <div class="payment-info-row">
+                                <span class="payment-info-label">SWIFT Code</span>
+                                <span class="payment-info-value" id="swiftCode">ICBKCNBJFSN</span>
+                            </div>
+                            <div class="payment-info-row">
+                                <span class="payment-info-label" data-i18n="recharge_branch">开户支行</span>
+                                <span class="payment-info-value" id="bankBranch">请咨询银行</span>
+                            </div>
+                        </div>
+
+                        <!-- 银行卡收款二维码 -->
+                        <div class="payment-qr-section">
+                            <div class="qr-label" data-i18n="recharge_qr_label">扫码支付</div>
+                            <div class="qr-code-box" id="bankQRCode">
+                                <!-- 二维码将通过 JS 动态生成 -->
+                            </div>
+                            <div class="qr-hint" data-i18n="recharge_qr_hint">打开银行APP扫码支付</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="recharge_upload">上传转账凭证</label>
+                        <div class="file-upload" onclick="document.getElementById('proofFile').click()">
+                            <div class="file-upload-icon">📁</div>
+                            <p data-i18n="recharge_upload">点击上传文件</p>
+                            <input type="file" id="proofFile" accept="image/*" style="display:none;">
+                        </div>
+                        <p id="fileName" style="margin-top: 8px; color: var(--text-secondary);"></p>
+                    </div>
+
+                    <button class="btn btn-primary btn-block" onclick="submitRecharge()" data-i18n="recharge_submit">提交充值申请</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- API管理页面 -->
+        <div id="page-api" class="page" style="display:none;">
+            <div class="container">
+                <h2 class="card-header" data-i18n="api_title">我的API密钥</h2>
+                <div class="alert alert-warning">
+                    <span data-i18n="api_warning">请妥善保管你的API密钥，不要泄露给他人</span>
+                </div>
+                <button class="btn btn-primary" onclick="createApiKey()" style="margin-bottom: 20px;" data-i18n="api_create">创建新密钥</button>
+                <div class="api-list" id="apiKeyList">
+                    <!-- API密钥将在这里动态生成 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 使用记录页面 -->
+        <div id="page-history" class="page" style="display:none;">
+            <div class="container">
+                <h2 class="card-header" data-i18n="history_title">使用记录</h2>
+                <!-- 余额预警提示 -->
+                <div id="balanceWarning" class="alert alert-danger" style="display:none;">
+                    <span data-i18n="msg_balance_warning">余额不足，请及时充值</span>
+                </div>
+                <!-- 余额显示 -->
+                <div class="card" style="margin-bottom:16px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <span style="font-size:16px;" data-i18n="balance">账户余额</span>
+                        <span id="historyBalance" style="font-size:24px;font-weight:bold;color:var(--primary-color);">¥0</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th data-i18n="history_date">日期</th>
+                                    <th data-i18n="history_model">模型</th>
+                                    <th data-i18n="history_api">API密钥</th>
+                                    <th data-i18n="history_input_hit">输入(缓存命中)</th>
+                                    <th data-i18n="history_input_miss">输入(缓存未命中)</th>
+                                    <th data-i18n="history_output">输出</th>
+                                    <th data-i18n="history_cost">费用</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTable">
+                                <!-- 使用记录将在这里动态生成 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 管理后台页面 -->
+        <div id="page-admin" class="page" style="display:none;">
+            <div class="container">
+                <h2 class="card-header" data-i18n="admin_title">管理后台</h2>
+                <div class="stats-grid">
+                    <div class="stat-card" style="cursor:pointer;" onclick="showCustomerDetails()" title="点击查看客户详情">
+                        <div class="stat-value" id="adminUserCount">50</div>
+                        <div class="stat-label" data-i18n="admin_user_count">用户总数</div>
+                        <div style="font-size:12px;color:var(--text-secondary);margin-top:4px;">点击查看详细</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="adminTotalRecharge">0</div>
+                        <div class="stat-label" data-i18n="admin_total_recharge">总充值金额</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="adminPendingRecharge">0</div>
+                        <div class="stat-label" data-i18n="admin_pending_recharge">待确认充值</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="adminTotalUsage">0</div>
+                        <div class="stat-label" data-i18n="admin_total_usage">总用量</div>
+                    </div>
+                </div>
+
+                <!-- 录入用量 -->
+                <div class="card">
+                    <h3 style="margin-bottom: 16px;" data-i18n="admin_record_usage">录入用量</h3>
+                    <div class="form-row">
+                        <div class="form-group" style="flex:1;">
+                            <label class="form-label" data-i18n="admin_select_user">选择客户</label>
+                            <select class="form-input" id="usageUserSelect">
+                                <option value="">-- 选择客户 --</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex:1;">
+                            <label class="form-label" data-i18n="admin_select_model">选择模型</label>
+                            <select class="form-input" id="usageModelSelect">
+                                <option value="v4-flash">deepseek-v4-flash</option>
+                                <option value="v4-pro">deepseek-v4-pro</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group" style="flex:1;">
+                            <label class="form-label">API Key</label>
+                            <input type="text" class="form-input" id="usageApiKey" placeholder="输入使用的API Key">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group" style="flex:1;">
+                            <label class="form-label" data-i18n="admin_input_cache_hit">输入Token(缓存命中)</label>
+                            <input type="number" class="form-input" id="usageInputHit" value="0" min="0">
+                        </div>
+                        <div class="form-group" style="flex:1;">
+                            <label class="form-label" data-i18n="admin_input_cache_miss">输入Token(缓存未命中)</label>
+                            <input type="number" class="form-input" id="usageInputMiss" value="0" min="0">
+                        </div>
+                        <div class="form-group" style="flex:1;">
+                            <label class="form-label" data-i18n="admin_output_tokens">输出Token</label>
+                            <input type="number" class="form-input" id="usageOutput" value="0" min="0">
+                        </div>
+                    </div>
+                    <!-- 费用预览 -->
+                    <div id="usageCostPreview" style="padding:16px;background:#f0f9ff;border-radius:8px;margin-bottom:16px;display:none;">
+                        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                            <span data-i18n="history_input_hit">输入(缓存命中):</span>
+                            <span id="costInputHit">0元</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                            <span data-i18n="history_input_miss">输入(缓存未命中):</span>
+                            <span id="costInputMiss">0元</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                            <span data-i18n="history_output">输出:</span>
+                            <span id="costOutput">0元</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;font-weight:bold;border-top:1px solid #e5e7eb;padding-top:8px;">
+                            <span data-i18n="history_cost">总计费用:</span>
+                            <span id="costTotal" style="color:#ef4444;">0元</span>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:12px;">
+                        <button class="btn btn-secondary" onclick="calculateUsageCost()" data-i18n="admin_calculate_cost">计算费用</button>
+                        <button class="btn btn-primary" onclick="submitUsageRecord()" data-i18n="admin_submit_usage">提交用量</button>
+                    </div>
+                </div>
+
+                <!-- 客户管理 -->
+                <div class="card">
+                    <h3 style="margin-bottom: 16px;" data-i18n="admin_customer_management">客户管理</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>用户</th>
+                                    <th>邮箱</th>
+                                    <th data-i18n="balance">余额</th>
+                                    <th data-i18n="admin_total_usage">总用量</th>
+                                    <th data-i18n="admin_balance_warning">余额预警阈值</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminCustomerTable">
+                                <!-- 客户列表将在这里动态生成 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- API Key管理 -->
+                <div class="card">
+                    <h3 style="margin-bottom: 16px;">API Key 管理</h3>
+                    <p style="color:var(--text-secondary);margin-bottom:16px;">添加你的 API Key，然后分配给客户使用</p>
+                    
+                    <!-- 添加主Key -->
+                    <div style="display:flex;gap:12px;margin-bottom:16px;">
+                        <input type="text" class="form-input" id="masterKeyName" placeholder="Key名称（如：主账号Key）" style="flex:1;">
+                        <input type="text" class="form-input" id="masterKeyValue" placeholder="输入 API Key (sk-...)" style="flex:2;">
+                        <button class="btn btn-primary" onclick="addMasterApiKey()">添加Key</button>
+                    </div>
+                    
+                    <!-- 主Key列表 -->
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Key名称</th>
+                                    <th>API Key</th>
+                                    <th>状态</th>
+                                    <th>已分配给</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="masterKeyTable">
+                                <!-- 主Key列表将在这里动态生成 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 充值管理 -->
+                <div class="card">
+                    <h3 style="margin-bottom: 16px;" data-i18n="admin_recharges">充值管理</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>用户</th>
+                                    <th data-i18n="recharge_amount">金额</th>
+                                    <th>时间</th>
+                                    <th>凭证</th>
+                                    <th data-i18n="history_status">状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminRechargeTable">
+                                <!-- 充值记录将在这里动态生成 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 用量记录管理 -->
+                <div class="card">
+                    <h3 style="margin-bottom: 16px;">用量记录</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>用户</th>
+                                    <th data-i18n="history_model">模型</th>
+                                    <th data-i18n="history_input_hit">输入(缓存命中)</th>
+                                    <th data-i18n="history_input_miss">输入(缓存未命中)</th>
+                                    <th data-i18n="history_output">输出</th>
+                                    <th data-i18n="history_cost">费用</th>
+                                    <th>时间</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminUsageTable">
+                                <!-- 用量记录将在这里动态生成 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p data-i18n="footer_copyright">© 2026 AI Token 服务中心</p>
+        </div>
+    </footer>
+
+    <script src="config.js?v=18"></script>
+    <script src="i18n.js?v=18"></script>
+    <script src="supabase.min.js?v=18"></script>
+    <script src="qrcode.min.js?v=18"></script>
+    <script src="app.js?v=18"></script>
+</body>
+</html>

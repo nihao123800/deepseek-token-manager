@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSeek Token 客户管理系统 - 部署指南</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2563eb;
+            border-bottom: 2px solid #2563eb;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #1e40af;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #3b82f6;
+        }
+        .step {
+            background: #f8fafc;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #2563eb;
+        }
+        .step-number {
+            background: #2563eb;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .code {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .warning {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .success {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .info {
+            background: #dbeafe;
+            border: 1px solid #3b82f6;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        ul, ol {
+            padding-left: 20px;
+        }
+        li {
+            margin: 8px 0;
+        }
+        a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .button {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin: 5px;
+        }
+        .button:hover {
+            background: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>DeepSeek Token 客户管理系统 - 部署指南</h1>
+        
+        <div class="info">
+            <strong>系统介绍：</strong>这是一个完整的DeepSeek Token客户管理系统，包含客户注册/登录、API密钥管理、Token使用统计、在线充值功能、管理员后台，支持中文/英文/越南语三语。
+        </div>
+        
+        <h2>准备工作</h2>
+        <p>在开始之前，请准备以下材料：</p>
+        <ul>
+            <li><strong>一个邮箱账号</strong>（用于注册GitHub和Supabase）</li>
+            <li><strong>你的银行卡信息</strong>（用于收款）</li>
+            <li><strong>30分钟时间</strong></li>
+        </ul>
+        
+        <h2>第一步：注册GitHub账号</h2>
+        <div class="step">
+            <span class="step-number">1</span>
+            <strong>访问GitHub官网</strong>
+            <ul>
+                <li>打开浏览器，访问：<a href="https://github.com" target="_blank">https://github.com</a></li>
+                <li>点击右上角的 <strong>"Sign up"</strong> 按钮</li>
+            </ul>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">2</span>
+            <strong>填写注册信息</strong>
+            <ul>
+                <li>Email：填写你的邮箱</li>
+                <li>Password：设置一个密码（至少8位）</li>
+                <li>Username：设置一个用户名（建议用英文，比如 deepseek-token-vn）</li>
+                <li>完成人机验证</li>
+            </ul>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">3</span>
+            <strong>验证邮箱</strong>
+            <ul>
+                <li>去你的邮箱查收验证邮件</li>
+                <li>点击验证链接完成注册</li>
+            </ul>
+        </div>
+        
+        <h2>第二步：注册Supabase账号</h2>
+        <div class="step">
+            <span class="step-number">1</span>
+            <strong>访问Supabase官网</strong>
+            <ul>
+                <li>打开浏览器，访问：<a href="https://supabase.com" target="_blank">https://supabase.com</a></li>
+                <li>点击右上角的 <strong>"Start your project"</strong> 按钮</li>
+            </ul>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">2</span>
+            <strong>注册账号</strong>
+            <ul>
+                <li>点击 <strong>"Sign up with GitHub"</strong>（使用GitHub账号登录，最简单）</li>
+                <li>授权Supabase访问你的GitHub</li>
+            </ul>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">3</span>
+            <strong>创建项目</strong>
+            <ul>
+                <li>登录后，点击 <strong>"New project"</strong></li>
+                <li>填写项目信息：
+                    <ul>
+                        <li>Organization：选择默认的组织</li>
+                        <li>Project name：填写 deepseek-token-manager</li>
+                        <li>Database Password：设置一个数据库密码（记住这个密码）</li>
+                        <li>Region：选择 <strong>"Southeast Asia (Singapore)"</strong>（离越南最近）</li>
+                    </ul>
+                </li>
+                <li>点击 <strong>"Create new project"</strong></li>
+                <li>等待1-2分钟项目创建完成</li>
+            </ul>
+        </div>
+        
+        <h2>第三步：部署前端到GitHub Pages</h2>
+        <div class="step">
+            <span class="step-number">1</span>
+            <strong>创建GitHub仓库</strong>
+            <ol>
+                <li>登录GitHub，点击右上角的 <strong>"+"</strong> 号，选择 <strong>"New repository"</strong></li>
+                <li>填写仓库信息：
+                    <ul>
+                        <li>Repository name：deepseek-token-manager</li>
+                        <li>Description：DeepSeek Token Customer Management System</li>
+                        <li>选择 <strong>"Public"</strong></li>
+                        <li>勾选 <strong>"Add a README file"</strong></li>
+                    </ul>
+                </li>
+                <li>点击 <strong>"Create repository"</strong></li>
+            </ol>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">2</span>
+            <strong>上传文件</strong>
+            <ol>
+                <li>在仓库页面，点击 <strong>"Add file"</strong> → <strong>"Upload files"</strong></li>
+                <li>将以下文件拖拽到上传区域：
+                    <ul>
+                        <li>index.html</li>
+                        <li>style.css</li>
+                        <li>app.js</li>
+                        <li>config.js</li>
+                        <li>i18n.js</li>
+                    </ul>
+                </li>
+                <li>点击 <strong>"Commit changes"</strong></li>
+            </ol>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">3</span>
+            <strong>启用GitHub Pages</strong>
+            <ol>
+                <li>在仓库页面，点击 <strong>"Settings"</strong>（设置）</li>
+                <li>左侧菜单找到 <strong>"Pages"</strong></li>
+                <li>Source 选择 <strong>"Deploy from a branch"</strong></li>
+                <li>Branch 选择 <strong>"main"</strong>，文件夹选择 <strong>"/ (root)"</strong></li>
+                <li>点击 <strong>"Save"</strong></li>
+                <li>等待1-2分钟，页面会显示你的网站地址，类似：<br>
+                    <code>https://你的用户名.github.io/deepseek-token-manager/</code>
+                </li>
+            </ol>
+        </div>
+        
+        <h2>第四步：配置Supabase数据库</h2>
+        <div class="step">
+            <span class="step-number">1</span>
+            <strong>进入SQL编辑器</strong>
+            <ol>
+                <li>在Supabase控制台，点击左侧的 <strong>"SQL Editor"</strong></li>
+                <li>点击 <strong>"New query"</strong></li>
+            </ol>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">2</span>
+            <strong>创建数据库表</strong>
+            <p>复制以下SQL代码，粘贴到编辑器中，然后点击 <strong>"Run"</strong>：</p>
+            <div class="code">
+-- 1. 用户表<br>
+CREATE TABLE users (<br>
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,<br>
+    email TEXT UNIQUE NOT NULL,<br>
+    username TEXT NOT NULL,<br>
+    password_hash TEXT NOT NULL,<br>
+    balance DECIMAL(10,2) DEFAULT 0,<br>
+    is_admin BOOLEAN DEFAULT FALSE,<br>
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()<br>
+);<br><br>
+-- 2. API密钥表<br>
+CREATE TABLE api_keys (<br>
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,<br>
+    user_id UUID REFERENCES users(id),<br>
+    api_key TEXT UNIQUE NOT NULL,<br>
+    status TEXT DEFAULT 'active',<br>
+    usage_count BIGINT DEFAULT 0,<br>
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),<br>
+    last_used_at TIMESTAMP WITH TIME ZONE<br>
+);<br><br>
+-- 3. 充值记录表<br>
+CREATE TABLE recharge_requests (<br>
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,<br>
+    user_id UUID REFERENCES users(id),<br>
+    amount DECIMAL(10,2) NOT NULL,<br>
+    proof_url TEXT,<br>
+    status TEXT DEFAULT 'pending',<br>
+    admin_note TEXT,<br>
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),<br>
+    confirmed_at TIMESTAMP WITH TIME ZONE<br>
+);<br><br>
+-- 4. 使用记录表<br>
+CREATE TABLE usage_logs (<br>
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,<br>
+    user_id UUID REFERENCES users(id),<br>
+    api_key_id UUID REFERENCES api_keys(id),<br>
+    tokens_used BIGINT NOT NULL,<br>
+    status TEXT DEFAULT 'success',<br>
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()<br>
+);<br><br>
+-- 5. 创建索引<br>
+CREATE INDEX idx_api_keys_user_id ON api_keys(user_id);<br>
+CREATE INDEX idx_recharge_requests_user_id ON recharge_requests(user_id);<br>
+CREATE INDEX idx_usage_logs_user_id ON usage_logs(user_id);<br><br>
+-- 6. 启用行级安全策略（可选，增强安全性）<br>
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;<br>
+ALTER TABLE api_keys ENABLE ROW LEVEL SECURITY;<br>
+ALTER TABLE recharge_requests ENABLE ROW LEVEL SECURITY;<br>
+ALTER TABLE usage_logs ENABLE ROW LEVEL SECURITY;
+            </div>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">3</span>
+            <strong>获取API密钥</strong>
+            <ol>
+                <li>在Supabase控制台，点击左上角的 <strong>"Settings"</strong>（齿轮图标）</li>
+                <li>点击 <strong>"API"</strong></li>
+                <li>复制以下两个值：
+                    <ul>
+                        <li><strong>Project URL</strong>（类似：https://xxxxx.supabase.co）</li>
+                        <li><strong>anon public key</strong>（以 eyJ 开头的长字符串）</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+        
+        <h2>第五步：连接前后端</h2>
+        <div class="step">
+            <span class="step-number">1</span>
+            <strong>更新配置文件</strong>
+            <ol>
+                <li>在GitHub仓库中，找到并打开 <strong>"config.js"</strong> 文件</li>
+                <li>点击编辑按钮（铅笔图标）</li>
+                <li>修改以下内容：</li>
+            </ol>
+            <div class="code">
+const CONFIG = {<br>
+    // 替换为你的Supabase信息<br>
+    SUPABASE_URL: '你的Project URL',<br>
+    SUPABASE_ANON_KEY: '你的anon public key',<br>
+    <br>
+    // 替换为你的管理员邮箱<br>
+    ADMIN_EMAIL: '你的邮箱@example.com',<br>
+    <br>
+    // 替换为你的收款信息<br>
+    PAYMENT: {<br>
+        BANK_NAME: '你的银行名称',<br>
+        BANK_ACCOUNT: '你的银行卡号',<br>
+        ACCOUNT_NAME: '你的账户姓名',<br>
+        BANK_BRANCH: '开户支行'<br>
+    },<br>
+    <br>
+    // 其他配置保持不变<br>
+    RECHARGE_TIERS: [10, 50, 100],<br>
+    API_KEY_PREFIX: 'sk-',<br>
+    DEFAULT_LANG: 'zh',<br>
+    SUPPORTED_LANGS: ['zh', 'en', 'vi']<br>
+};
+            </div>
+            <ol start="4">
+                <li>点击 <strong>"Commit changes"</strong> 保存</li>
+            </ol>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">2</span>
+            <strong>等待部署</strong>
+            <ul>
+                <li>GitHub Pages会自动重新部署</li>
+                <li>等待1-2分钟</li>
+                <li>访问你的网站：<code>https://你的用户名.github.io/deepseek-token-manager/</code></li>
+            </ul>
+        </div>
+        
+        <h2>第六步：测试系统</h2>
+        <div class="step">
+            <span class="step-number">1</span>
+            <strong>测试注册</strong>
+            <ol>
+                <li>打开你的网站</li>
+                <li>点击 <strong>"立即开始"</strong></li>
+                <li>填写注册信息</li>
+                <li>点击 <strong>"注册"</strong></li>
+            </ol>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">2</span>
+            <strong>测试登录</strong>
+            <ol>
+                <li>使用刚注册的账号登录</li>
+                <li>查看控制台页面</li>
+            </ol>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">3</span>
+            <strong>测试API密钥</strong>
+            <ol>
+                <li>点击 <strong>"我的API"</strong></li>
+                <li>创建新的API密钥</li>
+                <li>测试复制功能</li>
+            </ol>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">4</span>
+            <strong>测试充值</strong>
+            <ol>
+                <li>点击 <strong>"充值"</strong></li>
+                <li>选择金额</li>
+                <li>上传转账凭证（可以用任意图片代替测试）</li>
+                <li>提交申请</li>
+            </ol>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">5</span>
+            <strong>测试管理员功能</strong>
+            <ol>
+                <li>使用你设置的管理员邮箱登录</li>
+                <li>点击 <strong>"管理后台"</strong></li>
+                <li>查看待确认的充值</li>
+                <li>确认一笔充值</li>
+            </ol>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">6</span>
+            <strong>测试语言切换</strong>
+            <ol>
+                <li>点击右上角的语言按钮</li>
+                <li>切换到英文（English）</li>
+                <li>切换到越南语（Tiếng Việt）</li>
+            </ol>
+        </div>
+        
+        <h2>常见问题</h2>
+        
+        <div class="warning">
+            <strong>Q1: 网站打不开怎么办？</strong>
+            <ul>
+                <li>确认GitHub Pages已启用</li>
+                <li>等待几分钟后刷新</li>
+                <li>检查仓库是否为Public</li>
+            </ul>
+        </div>
+        
+        <div class="info">
+            <strong>Q2: Supabase免费额度够用吗？</strong>
+            <ul>
+                <li>500MB数据库空间（足够几十万条记录）</li>
+                <li>1GB文件存储（足够存储转账凭证图片）</li>
+                <li>50,000月活跃用户</li>
+                <li><strong>完全够用</strong></li>
+            </ul>
+        </div>
+        
+        <div class="success">
+            <strong>Q3: 如何修改收款信息？</strong>
+            <ul>
+                <li>编辑 "config.js" 文件中的 "PAYMENT" 部分</li>
+                <li>修改后保存即可</li>
+            </ul>
+        </div>
+        
+        <h2>需要帮助？</h2>
+        <p>如果在部署过程中遇到任何问题：</p>
+        <ol>
+            <li><strong>仔细阅读每一步</strong>，确保没有遗漏</li>
+            <li><strong>检查错误信息</strong>，通常会有提示</li>
+            <li><strong>重新操作一次</strong>，有时候网络问题会导致失败</li>
+            <li><strong>截图发给我</strong>，我可以帮你诊断问题</li>
+        </ol>
+        
+        <div class="success">
+            <strong>恭喜！</strong>如果你按照以上步骤操作，你的DeepSeek Token客户管理系统已经成功部署！
+            <br><br>
+            <strong>接下来你可以：</strong>
+            <ol>
+                <li>把网站地址分享给你的客户</li>
+                <li>让客户注册并使用你的API服务</li>
+                <li>在管理后台确认充值请求</li>
+                <li>根据需要添加更多功能</li>
+            </ol>
+            <br>
+            <strong>记住：</strong>
+            <ul>
+                <li>所有数据都保存在Supabase云端，安全可靠</li>
+                <li>系统是响应式的，手机和电脑都能用</li>
+                <li>支持中英越三语，适合东南亚市场</li>
+            </ul>
+            <br>
+            祝你的业务蒸蒸日上！🚀
+        </div>
+    </div>
+</body>
+</html>

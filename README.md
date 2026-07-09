@@ -1,0 +1,329 @@
+# DeepSeek Token 客户管理系统 - 部署指南
+
+## 📋 目录
+1. [系统介绍](#系统介绍)
+2. [准备工作](#准备工作)
+3. [第一步：注册GitHub账号](#第一步注册github账号)
+4. [第二步：注册Supabase账号](#第二步注册supabase账号)
+5. [第三步：部署前端到GitHub Pages](#第三步部署前端到github-pages)
+6. [第四步：配置Supabase数据库](#第四步配置supabase数据库)
+7. [第五步：连接前后端](#第五步连接前后端)
+8. [第六步：测试系统](#第六步测试系统)
+9. [常见问题](#常见问题)
+
+---
+
+## 系统介绍
+
+这是一个完整的DeepSeek Token客户管理系统，包含：
+- ✅ 客户注册/登录
+- ✅ API密钥管理
+- ✅ Token使用统计
+- ✅ 在线充值功能
+- ✅ 管理员后台
+- ✅ 三语支持（中文/英文/越南语）
+
+**技术栈：**
+- 前端：HTML + CSS + JavaScript（免费托管在GitHub Pages）
+- 后端：Supabase（免费额度足够50个客户使用）
+- 总成本：**0元**
+
+---
+
+## 准备工作
+
+在开始之前，请准备以下材料：
+
+1. **一个邮箱账号**（用于注册GitHub和Supabase）
+2. **你的银行卡信息**（用于收款）
+3. **30分钟时间**
+
+---
+
+## 第一步：注册GitHub账号
+
+### 1.1 访问GitHub官网
+- 打开浏览器，访问：https://github.com
+- 点击右上角的 **Sign up** 按钮
+
+### 1.2 填写注册信息
+- Email：填写你的邮箱
+- Password：设置一个密码（至少8位）
+- Username：设置一个用户名（建议用英文，比如 `deepseek-token-vn`）
+- 完成人机验证
+
+### 1.3 验证邮箱
+- 去你的邮箱查收验证邮件
+- 点击验证链接完成注册
+
+---
+
+## 第二步：注册Supabase账号
+
+### 2.1 访问Supabase官网
+- 打开浏览器，访问：https://supabase.com
+- 点击右上角的 **Start your project** 按钮
+
+### 2.2 注册账号
+- 点击 **Sign up with GitHub**（使用GitHub账号登录，最简单）
+- 授权Supabase访问你的GitHub
+
+### 2.3 创建项目
+- 登录后，点击 **New project**
+- 填写项目信息：
+  - Organization：选择默认的组织
+  - Project name：填写 `deepseek-token-manager`
+  - Database Password：设置一个数据库密码（记住这个密码）
+  - Region：选择 **Southeast Asia (Singapore)**（离越南最近）
+- 点击 **Create new project**
+- 等待1-2分钟项目创建完成
+
+---
+
+## 第三步：部署前端到GitHub Pages
+
+### 3.1 创建GitHub仓库
+1. 登录GitHub，点击右上角的 **+** 号，选择 **New repository**
+2. 填写仓库信息：
+   - Repository name：`deepseek-token-manager`
+   - Description：`DeepSeek Token Customer Management System`
+   - 选择 **Public**
+   - 勾选 **Add a README file**
+3. 点击 **Create repository**
+
+### 3.2 上传文件
+1. 在仓库页面，点击 **Add file** → **Upload files**
+2. 将以下文件拖拽到上传区域：
+   - `index.html`
+   - `style.css`
+   - `app.js`
+   - `config.js`
+   - `i18n.js`
+3. 点击 **Commit changes**
+
+### 3.3 启用GitHub Pages
+1. 在仓库页面，点击 **Settings**（设置）
+2. 左侧菜单找到 **Pages**
+3. Source 选择 **Deploy from a branch**
+4. Branch 选择 **main**，文件夹选择 **/ (root)**
+5. 点击 **Save**
+6. 等待1-2分钟，页面会显示你的网站地址，类似：
+   ```
+   https://你的用户名.github.io/deepseek-token-manager/
+   ```
+
+---
+
+## 第四步：配置Supabase数据库
+
+### 4.1 进入SQL编辑器
+1. 在Supabase控制台，点击左侧的 **SQL Editor**
+2. 点击 **New query**
+
+### 4.2 创建数据库表
+复制以下SQL代码，粘贴到编辑器中，然后点击 **Run**：
+
+```sql
+-- 1. 用户表
+CREATE TABLE users (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    email TEXT UNIQUE NOT NULL,
+    username TEXT NOT NULL,
+    password_hash TEXT NOT NULL,
+    balance DECIMAL(10,2) DEFAULT 0,
+    is_admin BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 2. API密钥表
+CREATE TABLE api_keys (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id UUID REFERENCES users(id),
+    api_key TEXT UNIQUE NOT NULL,
+    status TEXT DEFAULT 'active',
+    usage_count BIGINT DEFAULT 0,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_used_at TIMESTAMP WITH TIME ZONE
+);
+
+-- 3. 充值记录表
+CREATE TABLE recharge_requests (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id UUID REFERENCES users(id),
+    amount DECIMAL(10,2) NOT NULL,
+    proof_url TEXT,
+    status TEXT DEFAULT 'pending',
+    admin_note TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    confirmed_at TIMESTAMP WITH TIME ZONE
+);
+
+-- 4. 使用记录表
+CREATE TABLE usage_logs (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id UUID REFERENCES users(id),
+    api_key_id UUID REFERENCES api_keys(id),
+    tokens_used BIGINT NOT NULL,
+    status TEXT DEFAULT 'success',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 5. 创建索引
+CREATE INDEX idx_api_keys_user_id ON api_keys(user_id);
+CREATE INDEX idx_recharge_requests_user_id ON recharge_requests(user_id);
+CREATE INDEX idx_usage_logs_user_id ON usage_logs(user_id);
+
+-- 6. 启用行级安全策略（可选，增强安全性）
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE api_keys ENABLE ROW LEVEL SECURITY;
+ALTER TABLE recharge_requests ENABLE ROW LEVEL SECURITY;
+ALTER TABLE usage_logs ENABLE ROW LEVEL SECURITY;
+```
+
+### 4.3 获取API密钥
+1. 在Supabase控制台，点击左上角的 **Settings**（齿轮图标）
+2. 点击 **API**
+3. 复制以下两个值：
+   - **Project URL**（类似：`https://xxxxx.supabase.co`）
+   - **anon public** key（以 `eyJ` 开头的长字符串）
+
+---
+
+## 第五步：连接前后端
+
+### 5.1 更新配置文件
+1. 在GitHub仓库中，找到并打开 `config.js` 文件
+2. 点击编辑按钮（铅笔图标）
+3. 修改以下内容：
+
+```javascript
+const CONFIG = {
+    // 替换为你的Supabase信息
+    SUPABASE_URL: '你的Project URL',
+    SUPABASE_ANON_KEY: '你的anon public key',
+    
+    // 替换为你的管理员邮箱
+    ADMIN_EMAIL: '你的邮箱@example.com',
+    
+    // 替换为你的收款信息
+    PAYMENT: {
+        BANK_NAME: '你的银行名称',
+        BANK_ACCOUNT: '你的银行卡号',
+        ACCOUNT_NAME: '你的账户姓名',
+        BANK_BRANCH: '开户支行'
+    },
+    
+    // 其他配置保持不变
+    RECHARGE_TIERS: [10, 50, 100],
+    API_KEY_PREFIX: 'sk-',
+    DEFAULT_LANG: 'zh',
+    SUPPORTED_LANGS: ['zh', 'en', 'vi']
+};
+```
+
+4. 点击 **Commit changes** 保存
+
+### 5.2 等待部署
+- GitHub Pages会自动重新部署
+- 等待1-2分钟
+- 访问你的网站：`https://你的用户名.github.io/deepseek-token-manager/`
+
+---
+
+## 第六步：测试系统
+
+### 6.1 测试注册
+1. 打开你的网站
+2. 点击 **立即开始**
+3. 填写注册信息
+4. 点击 **注册**
+
+### 6.2 测试登录
+1. 使用刚注册的账号登录
+2. 查看控制台页面
+
+### 6.3 测试API密钥
+1. 点击 **我的API**
+2. 创建新的API密钥
+3. 测试复制功能
+
+### 6.4 测试充值
+1. 点击 **充值**
+2. 选择金额
+3. 上传转账凭证（可以用任意图片代替测试）
+4. 提交申请
+
+### 6.5 测试管理员功能
+1. 使用你设置的管理员邮箱登录
+2. 点击 **管理后台**
+3. 查看待确认的充值
+4. 确认一笔充值
+
+### 6.6 测试语言切换
+1. 点击右上角的语言按钮
+2. 切换到英文（English）
+3. 切换到越南语（Tiếng Việt）
+
+---
+
+## 常见问题
+
+### Q1: 网站打不开怎么办？
+- 确认GitHub Pages已启用
+- 等待几分钟后刷新
+- 检查仓库是否为Public
+
+### Q2: Supabase免费额度够用吗？
+- 500MB数据库空间（足够几十万条记录）
+- 1GB文件存储（足够存储转账凭证图片）
+- 50,000月活跃用户
+- **完全够用**
+
+### Q3: 如何修改收款信息？
+- 编辑 `config.js` 文件中的 `PAYMENT` 部分
+- 修改后保存即可
+
+### Q4: 如何查看充值申请？
+- 用管理员邮箱登录
+- 进入管理后台
+- 查看待确认的充值列表
+
+### Q5: 如何添加新的充值档位？
+- 编辑 `config.js` 文件
+- 修改 `RECHARGE_TIERS` 数组
+- 例如：`RECHARGE_TIERS: [10, 20, 50, 100, 200]`
+
+### Q6: 如何备份数据？
+- 在Supabase控制台，点击 **Table Editor**
+- 选择要导出的表
+- 点击 **Export as CSV**
+
+---
+
+## 📞 遇到问题？
+
+如果在部署过程中遇到任何问题：
+
+1. **仔细阅读每一步**，确保没有遗漏
+2. **检查错误信息**，通常会有提示
+3. **重新操作一次**，有时候网络问题会导致失败
+4. **截图发给我**，我可以帮你诊断问题
+
+---
+
+## 🎉 恭喜！
+
+如果你按照以上步骤操作，你的DeepSeek Token客户管理系统已经成功部署！
+
+**接下来你可以：**
+1. 把网站地址分享给你的客户
+2. 让客户注册并使用你的API服务
+3. 在管理后台确认充值请求
+4. 根据需要添加更多功能
+
+**记住：**
+- 所有数据都保存在Supabase云端，安全可靠
+- 系统是响应式的，手机和电脑都能用
+- 支持中英越三语，适合东南亚市场
+
+祝你的业务蒸蒸日上！🚀
